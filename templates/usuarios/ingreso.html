@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Ingreso{% endblock %}
+{% block contenido %}
+<section class="tarjeta">
+    <h1>Ingreso al sistema</h1>
+    <p>Ingresa con tu cuenta institucional de la UCB.</p>
+    <a class="boton" href="{% url 'usuarios:ingresar_con_google' %}">Ingresar con Google</a>
+</section>
+{% endblock %}

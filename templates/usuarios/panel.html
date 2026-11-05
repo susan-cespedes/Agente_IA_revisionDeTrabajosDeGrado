@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block titulo %}Panel{% endblock %}
+{% block contenido %}
+<section class="tarjeta">
+    <h1>Bienvenido, {{ user.first_name|default:user.email }}</h1>
+    <p>Rol: <strong>{{ user.get_rol_display }}</strong></p>
+</section>
+{% endblock %}

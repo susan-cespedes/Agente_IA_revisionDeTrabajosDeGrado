@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Revisor de trabajos de grado{% endblock %} · UCB</title>
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: #f5f6f8; color: #1d2330; }
+        .barra { display: flex; justify-content: space-between; align-items: center;
+                 padding: 12px 24px; background: #1f4e8c; color: #fff; }
+        .barra form { margin: 0; }
+        .barra button { background: none; border: 0; color: #fff; text-decoration: underline; cursor: pointer; font: inherit; }
+        .contenido { max-width: 520px; margin: 40px auto; padding: 0 16px; }
+        .tarjeta { background: #fff; border: 1px solid #d9dde5; border-radius: 8px; padding: 24px; text-align: center; }
+        .boton { display: inline-block; padding: 10px 18px; background: #1f4e8c; color: #fff;
+                 border-radius: 6px; text-decoration: none; }
+        .aviso { padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; background: #fbe9e9; }
+        .tarjeta h1 { overflow-wrap: anywhere; }
+    </style>
+</head>
+<body>
+<header class="barra">
+    <strong>Revisor de trabajos de grado</strong>
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'usuarios:salir' %}">
+        {% csrf_token %}
+        <span>{{ user.email }}</span> · <button type="submit">Salir</button>
+    </form>
+    {% endif %}
+</header>
+
+<main class="contenido">
+    {% for mensaje in messages %}
+    <div class="aviso">{{ mensaje }}</div>
+    {% endfor %}
+    {% block contenido %}{% endblock %}
+</main>
+</body>
+</html>

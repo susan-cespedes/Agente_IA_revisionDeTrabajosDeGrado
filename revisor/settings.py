@@ -10,10 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -31,12 +34,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "apps.usuarios",
 ]
 
 MIDDLEWARE = [
@@ -54,7 +58,7 @@ ROOT_URLCONF = 'revisor.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        "DIRS": [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,3 +124,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = "usuarios.Usuario"
+# Cuentas institucionales (OE2)
+DOMINIO_INSTITUCIONAL = "ucb.edu.bo"
+PATRON_CORREO_DOCENTE = r"^[a-z]+(\.[a-z])?@ucb\.edu\.bo$"
+# Inicio de sesión con Google (OE2)
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+LOGIN_URL = "usuarios:ingreso"
