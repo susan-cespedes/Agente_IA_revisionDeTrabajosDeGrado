@@ -10,4 +10,6 @@ urlpatterns = [
     path("google/callback/", views.google_callback, name="google_callback"),
     path("salir/", views.salir, name="salir"),
     path("panel/", views.panel, name="panel"),
+    path("api-key/", views.registrar_api_key, name="api_key"),
+    path("api-key/quitar/", views.quitar_api_key, name="quitar_api_key"),
 ]

@@ -4,5 +4,16 @@
 <section class="tarjeta">
     <h1>Bienvenido, {{ user.first_name|default:user.email }}</h1>
     <p>Rol: <strong>{{ user.get_rol_display }}</strong></p>
+
+    {% if tiene_api_key %}
+    <p>API key: <strong>registrada para esta sesión</strong></p>
+    <form method="post" action="{% url 'usuarios:quitar_api_key' %}">
+        {% csrf_token %}
+        <button class="boton secundario" type="submit">Quitar API key</button>
+    </form>
+    {% else %}
+    <p>API key: <strong>no registrada</strong></p>
+    <a class="boton" href="{% url 'usuarios:api_key' %}">Registrar API key</a>
+    {% endif %}
 </section>
 {% endblock %}

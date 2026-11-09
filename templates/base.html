@@ -14,7 +14,14 @@
         .tarjeta { background: #fff; border: 1px solid #d9dde5; border-radius: 8px; padding: 24px; text-align: center; }
         .boton { display: inline-block; padding: 10px 18px; background: #1f4e8c; color: #fff;
                  border-radius: 6px; text-decoration: none; }
-        .aviso { padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; background: #fbe9e9; }
+            .aviso { padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; background: #e8eef8; }
+    .aviso-error { background: #fbe9e9; }
+    .aviso-success { background: #e6f4ea; }
+    label { display: block; margin: 16px 0 6px; font-weight: 500; text-align: left; }
+    input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #d9dde5; border-radius: 6px; font: inherit; }
+    .boton { border: 0; cursor: pointer; font: inherit; margin-top: 16px; }
+    .boton.secundario { background: #5b6475; }
+    .error { color: #b3261e; text-align: left; margin: 6px 0 0; }
         .tarjeta h1 { overflow-wrap: anywhere; }
     </style>
 </head>
@@ -31,7 +38,7 @@
 
 <main class="contenido">
     {% for mensaje in messages %}
-    <div class="aviso">{{ mensaje }}</div>
+    <div class="aviso aviso-{{ mensaje.tags }}">{{ mensaje }}</div>
     {% endfor %}
     {% block contenido %}{% endblock %}
 </main>

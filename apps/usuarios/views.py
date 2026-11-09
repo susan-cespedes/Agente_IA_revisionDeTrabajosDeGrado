@@ -10,6 +10,11 @@ from django.views.decorators.http import require_POST
 from .google_oauth import google
 from .services import obtener_o_crear_usuario
 
+from django.views.decorators.debug import sensitive_post_parameters
+
+from .forms import ApiKeyForm
+from .services import borrar_api_key, guardar_api_key, tiene_api_key
+
 
 def ingreso(request):
     """Muestra la pantalla de ingreso."""
@@ -56,12 +61,42 @@ def google_callback(request):
 
 @require_POST
 def salir(request):
-    """Cierra la sesión."""
+    """Cierra la sesión y elimina la API key de la memoria."""
+    borrar_api_key(request.session)
     logout(request)
     return redirect("usuarios:ingreso")
 
 
 @login_required
 def panel(request):
-    """Página provisional después del ingreso: muestra quién es y su rol."""
-    return render(request, "usuarios/panel.html")
+    """Página provisional después del ingreso: muestra quién es, su rol y el estado de la API key."""
+    return render(request, "usuarios/panel.html", {
+        "tiene_api_key": tiene_api_key(request.session),
+    })
+
+@sensitive_post_parameters("api_key")
+@login_required
+def registrar_api_key(request):
+    """Muestra el formulario y registra la API key para la sesión."""
+    if request.method == "POST":
+        form = ApiKeyForm(request.POST)
+        if form.is_valid():
+            try:
+                guardar_api_key(request.session, form.cleaned_data["api_key"])
+            except ValueError as error:
+                form.add_error("api_key", str(error))
+            else:
+                messages.success(request, "API key registrada para esta sesión.")
+                return redirect("usuarios:panel")
+    else:
+        form = ApiKeyForm()
+    return render(request, "usuarios/api_key.html", {"form": form})
+
+
+@require_POST
+@login_required
+def quitar_api_key(request):
+    """Permite al usuario eliminar su key antes de salir."""
+    borrar_api_key(request.session)
+    messages.info(request, "Se eliminó la API key de esta sesión.")
+    return redirect("usuarios:panel")

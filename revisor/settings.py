@@ -132,3 +132,16 @@ PATRON_CORREO_DOCENTE = r"^[a-z]+(\.[a-z])?@ucb\.edu\.bo$"
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 LOGIN_URL = "usuarios:ingreso"
+
+# API key del usuario (OE2): solo en memoria, nunca en la base de datos
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "revisor-general",
+    },
+    "api_keys": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "revisor-api-keys",
+        "TIMEOUT": 60 * 60 * 4,  # 4 horas
+    },
+}

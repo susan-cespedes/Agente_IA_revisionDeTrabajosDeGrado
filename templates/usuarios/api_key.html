@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}API key{% endblock %}
+{% block contenido %}
+<section class="tarjeta">
+    <h1>Registrar API key</h1>
+    <p>El agente usa tu propia API key de Anthropic. Se guarda solo en la memoria del servidor
+        mientras dura tu sesión y se elimina al salir. No se almacena en la base de datos.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.api_key.label_tag }}
+        {{ form.api_key }}
+        {% for error in form.api_key.errors %}
+        <p class="error">{{ error }}</p>
+        {% endfor %}
+        <button class="boton" type="submit">Registrar</button>
+    </form>
+</section>
+{% endblock %}
