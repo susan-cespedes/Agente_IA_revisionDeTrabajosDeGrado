@@ -15,9 +15,10 @@
         <button class="boton" type="submit">Verificar enlace</button>
     </form>
 
-    {% if documento_id %}
+    {% if titulo %}
     <div class="aviso aviso-success">
-        Enlace válido. ID del documento: <code>{{ documento_id }}</code>
+        Documento verificado: <strong>{{ titulo }}</strong><br>
+        ID: <code>{{ documento_id }}</code>
     </div>
     {% endif %}
 </section>

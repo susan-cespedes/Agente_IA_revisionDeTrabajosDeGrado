@@ -13,7 +13,10 @@ from .services import obtener_o_crear_usuario
 from django.views.decorators.debug import sensitive_post_parameters
 
 from .forms import ApiKeyForm
-from .services import borrar_api_key, guardar_api_key, tiene_api_key
+from .services import (
+    borrar_api_key, borrar_token_google, guardar_api_key, guardar_token_google,
+    obtener_o_crear_usuario, tiene_api_key,
+)
 
 from django.utils.http import url_has_allowed_host_and_scheme
 
@@ -57,16 +60,17 @@ def google_callback(request):
         return redirect("usuarios:ingreso")
 
     login(request, usuario)
+    guardar_token_google(request.session, token["access_token"], token.get("expires_in", 3600))
     return redirect("usuarios:panel")
 
 
 @require_POST
 def salir(request):
-    """Cierra la sesión y elimina la API key de la memoria."""
+    """Cierra la sesión y elimina la API key y el token de Google de la memoria."""
     borrar_api_key(request.session)
+    borrar_token_google(request.session)
     logout(request)
     return redirect("usuarios:ingreso")
-
 
 @login_required
 def panel(request):

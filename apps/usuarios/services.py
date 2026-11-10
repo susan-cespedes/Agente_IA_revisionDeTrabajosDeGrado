@@ -82,3 +82,23 @@ def borrar_api_key(sesion):
     """Elimina la key de la memoria (se usa al cerrar sesión)."""
     if sesion.session_key is not None:
         _keys.delete(_clave_cache(sesion))
+
+# --- Token de acceso de Google (solo en memoria, durante la sesión) ---
+
+def guardar_token_google(sesion, access_token, expira_en_segundos):
+    """Guarda el token en memoria hasta un minuto antes de que Google lo venza."""
+    if sesion.session_key is None:
+        sesion.save()
+    duracion = max(int(expira_en_segundos) - 60, 60)
+    _keys.set(f"google_token:{sesion.session_key}", access_token, timeout=duracion)
+
+
+def obtener_token_google(sesion):
+    if sesion.session_key is None:
+        return None
+    return _keys.get(f"google_token:{sesion.session_key}")
+
+
+def borrar_token_google(sesion):
+    if sesion.session_key is not None:
+        _keys.delete(f"google_token:{sesion.session_key}")
