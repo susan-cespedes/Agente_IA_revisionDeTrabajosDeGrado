@@ -15,5 +15,7 @@
     <p>API key: <strong>no registrada</strong></p>
     <a class="boton" href="{% url 'usuarios:api_key' %}">Registrar API key</a>
     {% endif %}
+    <hr>
+    <a class="boton" href="{% url 'documentos:nueva_revision' %}">Nueva revisión</a>
 </section>
 {% endblock %}

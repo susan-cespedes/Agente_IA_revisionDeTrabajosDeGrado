@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Nueva revisión{% endblock %}
+{% block contenido %}
+<section class="tarjeta">
+    <h1>Nueva revisión</h1>
+    <p>Pega el enlace de tu documento. Debe ser un documento nativo de Google Docs (no un Word subido a Drive).</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.enlace.label_tag }}
+        {{ form.enlace }}
+        {% for error in form.enlace.errors %}
+        <p class="error">{{ error }}</p>
+        {% endfor %}
+        <button class="boton" type="submit">Verificar enlace</button>
+    </form>
+
+    {% if documento_id %}
+    <div class="aviso aviso-success">
+        Enlace válido. ID del documento: <code>{{ documento_id }}</code>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

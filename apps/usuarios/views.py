@@ -15,6 +15,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from .forms import ApiKeyForm
 from .services import borrar_api_key, guardar_api_key, tiene_api_key
 
+from django.utils.http import url_has_allowed_host_and_scheme
 
 def ingreso(request):
     """Muestra la pantalla de ingreso."""
@@ -87,6 +88,10 @@ def registrar_api_key(request):
                 form.add_error("api_key", str(error))
             else:
                 messages.success(request, "API key registrada para esta sesión.")
+                destino = request.GET.get("next", "")
+                if url_has_allowed_host_and_scheme(destino, allowed_hosts={request.get_host()},
+                                               require_https=request.is_secure()):
+                   return redirect(destino)
                 return redirect("usuarios:panel")
     else:
         form = ApiKeyForm()
@@ -100,3 +105,4 @@ def quitar_api_key(request):
     borrar_api_key(request.session)
     messages.info(request, "Se eliminó la API key de esta sesión.")
     return redirect("usuarios:panel")
+
