@@ -1,9 +1,19 @@
 import re
 from urllib.parse import parse_qs, urlparse
+
 import requests
+
 from .google_docs import ErrorGoogleDocs, obtener_datos_basicos
 
 PATRON_ID = re.compile(r"/document(?:/u/\d+)?/d/([A-Za-z0-9_-]{25,})")
+
+MENSAJES_ERROR_GOOGLE = {
+    400: "El documento no es un documento nativo de Google Docs (por ejemplo, es un Word subido a Drive). "
+         "Ábrelo en Google Docs y usa Archivo > Guardar como documento de Google Docs.",
+    401: "Tu sesión con Google venció. Sal del sistema y vuelve a ingresar.",
+    403: "No tienes permiso para abrir este documento. Pide al propietario que lo comparta con tu cuenta institucional.",
+    404: "No se encontró el documento. Revisa que el enlace sea correcto.",
+}
 
 
 def extraer_id_documento(enlace):
@@ -21,22 +31,12 @@ def extraer_id_documento(enlace):
         raise ValueError("El enlace no corresponde a un documento de texto de Google Docs.")
 
     if parse_qs(url.query).get("rtpof") == ["true"]:
-        raise ValueError(
-            "El enlace corresponde a un archivo de Word guardado en Drive. "
-            "Ábrelo en Google Docs y usa Archivo > Guardar como documento de Google Docs."
-        )
+        raise ValueError(MENSAJES_ERROR_GOOGLE[400])
 
     coincidencia = PATRON_ID.search(url.path)
     if not coincidencia:
         raise ValueError("No se encontró el identificador del documento en el enlace.")
     return coincidencia.group(1)
-MENSAJES_ERROR_GOOGLE = {
-    400: "El documento no es un documento nativo de Google Docs (por ejemplo, es un Word subido a Drive). "
-         "Ábrelo en Google Docs y usa Archivo > Guardar como documento de Google Docs.",
-    401: "Tu sesión con Google venció. Sal del sistema y vuelve a ingresar.",
-    403: "No tienes permiso para abrir este documento. Pide al propietario que lo comparta con tu cuenta institucional.",
-    404: "No se encontró el documento. Revisa que el enlace sea correcto.",
-}
 
 
 def verificar_documento(documento_id, access_token):

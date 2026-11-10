@@ -1,8 +1,12 @@
 import re
 
 from django.conf import settings
-from .models import Usuario
 from django.core.cache import caches
+
+from .models import Usuario
+
+
+# --- Usuarios y roles ---
 
 def es_correo_institucional(email):
     """True si el correo pertenece al dominio de la universidad (o a un subdominio)."""
@@ -19,10 +23,7 @@ def rol_segun_correo(email):
 
 
 def obtener_o_crear_usuario(email, nombre="", apellido=""):
-    """Devuelve el usuario con ese correo; si no existe, lo crea con su rol.
-
-    No hay registro propio: el usuario se crea la primera vez que ingresa con Google.
-    """
+    """Devuelve el usuario con ese correo; si no existe, lo crea con su rol."""
     email = email.strip().lower()
     if not es_correo_institucional(email):
         raise PermissionError("Solo se permite el ingreso con la cuenta institucional de la UCB.")
@@ -40,6 +41,8 @@ def obtener_o_crear_usuario(email, nombre="", apellido=""):
         usuario.set_unusable_password()  # nunca entra con contraseña, solo con Google
         usuario.save()
     return usuario
+
+
 # --- API key del usuario (solo en memoria, durante la sesión) ---
 
 _keys = caches["api_keys"]
@@ -82,6 +85,7 @@ def borrar_api_key(sesion):
     """Elimina la key de la memoria (se usa al cerrar sesión)."""
     if sesion.session_key is not None:
         _keys.delete(_clave_cache(sesion))
+
 
 # --- Token de acceso de Google (solo en memoria, durante la sesión) ---
 

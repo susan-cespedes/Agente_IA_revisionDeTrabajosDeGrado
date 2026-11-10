@@ -5,20 +5,17 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_POST
 
-from .google_oauth import google
-from .services import obtener_o_crear_usuario
-
-from django.views.decorators.debug import sensitive_post_parameters
-
 from .forms import ApiKeyForm
+from .google_oauth import google
 from .services import (
     borrar_api_key, borrar_token_google, guardar_api_key, guardar_token_google,
     obtener_o_crear_usuario, tiene_api_key,
 )
 
-from django.utils.http import url_has_allowed_host_and_scheme
 
 def ingreso(request):
     """Muestra la pantalla de ingreso."""
@@ -60,6 +57,7 @@ def google_callback(request):
         return redirect("usuarios:ingreso")
 
     login(request, usuario)
+    # Se guarda DESPUÉS de login, porque login cambia el identificador de la sesión.
     guardar_token_google(request.session, token["access_token"], token.get("expires_in", 3600))
     return redirect("usuarios:panel")
 
@@ -72,12 +70,14 @@ def salir(request):
     logout(request)
     return redirect("usuarios:ingreso")
 
+
 @login_required
 def panel(request):
-    """Página provisional después del ingreso: muestra quién es, su rol y el estado de la API key."""
+    """Página provisional después del ingreso: quién es, su rol y el estado de la API key."""
     return render(request, "usuarios/panel.html", {
         "tiene_api_key": tiene_api_key(request.session),
     })
+
 
 @sensitive_post_parameters("api_key")
 @login_required
@@ -94,8 +94,8 @@ def registrar_api_key(request):
                 messages.success(request, "API key registrada para esta sesión.")
                 destino = request.GET.get("next", "")
                 if url_has_allowed_host_and_scheme(destino, allowed_hosts={request.get_host()},
-                                               require_https=request.is_secure()):
-                   return redirect(destino)
+                                                   require_https=request.is_secure()):
+                    return redirect(destino)
                 return redirect("usuarios:panel")
     else:
         form = ApiKeyForm()
@@ -109,4 +109,3 @@ def quitar_api_key(request):
     borrar_api_key(request.session)
     messages.info(request, "Se eliminó la API key de esta sesión.")
     return redirect("usuarios:panel")
-

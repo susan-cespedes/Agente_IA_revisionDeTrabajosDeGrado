@@ -5,6 +5,7 @@ URL_DOCUMENTOS = "https://docs.googleapis.com/v1/documents/{documento_id}"
 
 class ErrorGoogleDocs(Exception):
     """Google respondió con un código de error."""
+
     def __init__(self, codigo):
         super().__init__(f"Google Docs respondió con el código {codigo}")
         self.codigo = codigo
