@@ -12,14 +12,33 @@
         {% for error in form.enlace.errors %}
         <p class="error">{{ error }}</p>
         {% endfor %}
-        <button class="boton" type="submit">Verificar enlace</button>
+        <button class="boton" type="submit">Leer documento</button>
     </form>
+</section>
 
-    {% if titulo %}
-    <div class="aviso aviso-success">
-        Documento verificado: <strong>{{ titulo }}</strong><br>
-        ID: <code>{{ documento_id }}</code>
+{% if documento %}
+<section class="tarjeta resultado">
+    <h2>{{ documento.titulo }}</h2>
+    <p>{{ documento.palabras }} palabras · {{ documento.tablas }} tablas · {{ documento.imagenes }} imágenes</p>
+
+    <h3>Secciones detectadas ({{ documento.secciones|length }})</h3>
+    {% if documento.secciones %}
+    <ul class="secciones">
+        {% for seccion in documento.secciones %}
+        <li class="nivel-{{ seccion.nivel }}">{{ seccion.titulo }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="aviso aviso-warning">
+        No se detectaron títulos. Usa los estilos "Título 1", "Título 2", etc. de Google Docs
+        para que el agente identifique cada sección.
     </div>
     {% endif %}
+
+    <details>
+        <summary>Ver el texto leído</summary>
+        <pre class="texto-leido">{{ documento.texto }}</pre>
+    </details>
 </section>
+{% endif %}
 {% endblock %}
