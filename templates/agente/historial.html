@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo %}Mis revisiones{% endblock %}
+{% block contenido %}
+<section class="tarjeta resultado">
+    <h1>Mis revisiones</h1>
+    {% if revisiones %}
+    <p class="nota">Haz clic en una revisión para ver todas sus observaciones.</p>
+    <table class="historial">
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Documento</th>
+            <th>Etapa</th>
+            <th>Observaciones</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for r in revisiones %}
+        <tr>
+            <td>{{ r.creada|date:"d/m/Y H:i" }}</td>
+            <td>
+                <a href="{% url 'agente:detalle' r.pk %}">{{ r.nombre_documento }}</a>
+                {% if r.simulado %}<span class="etiqueta">simulada</span>{% endif %}
+                <div class="nota">{{ r.get_modalidad_display }}</div>
+            </td>
+            <td>{{ r.get_etapa_display }}</td>
+            <td>
+                <span class="cuenta sev-critica">{{ r.criticas }}</span>
+                <span class="cuenta sev-mayor">{{ r.mayores }}</span>
+                <span class="cuenta sev-menor">{{ r.menores }}</span>
+            </td>
+            <td><a href="{% url 'agente:pdf' r.pk %}">PDF</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="nota">Colores: <span class="cuenta sev-critica">críticas</span> <span class="cuenta sev-mayor">mayores</span> <span class="cuenta sev-menor">menores</span></p>
+    {% else %}
+    <p>Todavía no tienes revisiones.</p>
+    {% endif %}
+</section>
+
+<a class="boton secundario" href="{% url 'documentos:nueva_revision' %}">Nueva revisión</a>
+{% endblock %}

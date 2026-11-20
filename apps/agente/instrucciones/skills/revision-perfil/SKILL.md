@@ -1,7 +1,7 @@
 ---
 name: revision-perfil
-description: Revisión de la propuesta del tema y del perfil según la guía de la carrera y el enfoque causal determinista.
-etapas: PROPUESTA_TEMA, PERFIL
+description: Revisión de la propuesta del tema, del perfil y de los capítulos del perfil dentro del documento final, según la guía de la carrera y el enfoque causal determinista.
+etapas: PROPUESTA_TEMA, PERFIL, DOCUMENTO_FINAL
 ---
 
 # Skill: revisión de la propuesta del tema y del perfil
@@ -9,7 +9,8 @@ etapas: PROPUESTA_TEMA, PERFIL
 ## Secciones que se revisan según la etapa
 - **Propuesta del tema:** Antecedentes (organizacionales y tecnológicos), Situación problemática, Formulación del problema y Objetivo general. No observes la ausencia de las demás secciones.
 - **Perfil:** la estructura completa (regla EST-1).
-- **Introducción:** no se revisa en estas etapas. Se redacta cuando el documento está al 100% y se revisa en la etapa final. No observes su ausencia ni evalúes su contenido si existe.
+- **Documento final:** estas reglas se aplican a los capítulos que vienen del perfil (Antecedentes, Problema, Objetivos, Alcances y límites, Justificación y Bibliografía). EST-1 no se aplica: el resto del documento lo revisa el skill del documento final.
+- **Introducción:** en la propuesta del tema y en el perfil no se revisa, porque se redacta cuando el documento está al 100%. En esas etapas no observes su ausencia ni evalúes su contenido si existe. En el documento final sí se revisa (skill del documento final).
 
 ## Modalidad
 El mensaje indica la modalidad del trabajo: Proyecto de grado o Trabajo dirigido.
@@ -34,7 +35,7 @@ El mensaje indica la modalidad del trabajo: Proyecto de grado o Trabajo dirigido
 6. BIBLIOGRAFÍA
 ANEXOS
 ```
-- **EST-1** Reporta secciones faltantes, sobrantes o fuera de orden. Los Anexos no llevan numeración. La Introducción no forma parte de la estructura en esta etapa: no la reportes como faltante ni como sobrante. No exijas secciones que no figuran en esta estructura (cronograma, resumen, marcos teórico o metodológico). En un trabajo dirigido, la sección 1.2 no es obligatoria (ver Modalidad).
+- **EST-1** Reporta secciones faltantes, sobrantes o fuera de orden. Los Anexos no llevan numeración. En la propuesta y el perfil, la Introducción no forma parte de la estructura: no la reportes como faltante ni como sobrante. No exijas secciones que no figuran en esta estructura (cronograma, resumen, marcos teórico o metodológico). En un trabajo dirigido, la sección 1.2 no es obligatoria (ver Modalidad).
 
 ## Antecedentes (1.1 y 1.2)
 - **ANT-1** Se redactan sin juicios de valor, opiniones ni calificativos del autor ni de los entrevistados. Adjetivos valorativos ("deficiente", "ineficiente", "obsoleto", "lento") y conclusiones analíticas pertenecen a la Situación problemática. Excepción: las citas de fuentes publicadas y referenciadas sí pueden contenerlos. Lo que dice un entrevistado debe presentarse como dato (cantidades, tiempos, pasos, frecuencias), no como apreciación.

@@ -3,10 +3,12 @@
     apps/agente/instrucciones/
     ├── CLAUDE.md                      archivo general de instrucciones
     └── skills/
-        └── revision-perfil/SKILL.md   skill de la propuesta del tema y del perfil (OE4)
+        ├── revision-perfil/SKILL.md            propuesta del tema, perfil y capítulos del perfil
+        └── revision-documento-final/SKILL.md   introducción y capítulos del documento al 100%
 
 Cada SKILL.md empieza con un encabezado entre líneas '---' que indica su nombre,
-su descripción y las etapas a las que se aplica.
+su descripción y las etapas a las que se aplica. Una etapa puede usar más de un skill:
+el documento final usa el del perfil (para sus capítulos) y el del documento final.
 """
 
 from dataclasses import dataclass
@@ -37,7 +39,6 @@ def _separar_encabezado(texto):
 
 
 def listar_skills(carpeta=CARPETA):
-    """Devuelve todos los skills que hay en la carpeta skills/."""
     skills = []
     for ruta in sorted((carpeta / "skills").glob("*/SKILL.md")):
         datos, cuerpo = _separar_encabezado(ruta.read_text(encoding="utf-8"))
@@ -46,16 +47,16 @@ def listar_skills(carpeta=CARPETA):
     return skills
 
 
-def skill_para_etapa(etapa, carpeta=CARPETA):
-    """Devuelve el skill que se aplica a la etapa indicada."""
-    for skill in listar_skills(carpeta):
-        if etapa in skill.etapas:
-            return skill
-    raise LookupError(f"No hay un skill configurado para la etapa {etapa}.")
+def skills_para_etapa(etapa, carpeta=CARPETA):
+    """Todos los skills que se aplican a la etapa elegida."""
+    skills = [skill for skill in listar_skills(carpeta) if etapa in skill.etapas]
+    if not skills:
+        raise LookupError(f"No hay un skill configurado para la etapa {etapa}.")
+    return skills
 
 
 def armar_instrucciones(etapa, carpeta=CARPETA):
-    """Instrucciones del sistema: archivo general + solo el skill de la etapa elegida."""
+    """Instrucciones del sistema: archivo general + solo los skills de la etapa elegida."""
     general = (carpeta / "CLAUDE.md").read_text(encoding="utf-8").strip()
-    skill = skill_para_etapa(etapa, carpeta)
-    return f"{general}\n\n---\n\n{skill.contenido}"
+    partes = [general] + [skill.contenido for skill in skills_para_etapa(etapa, carpeta)]
+    return "\n\n---\n\n".join(partes)

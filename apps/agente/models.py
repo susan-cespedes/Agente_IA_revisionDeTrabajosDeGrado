@@ -11,6 +11,7 @@ class Revision(models.Model):
     class Etapa(models.TextChoices):
         PROPUESTA_TEMA = "PROPUESTA_TEMA", "Propuesta del tema"
         PERFIL = "PERFIL", "Perfil"
+        DOCUMENTO_FINAL = "DOCUMENTO_FINAL", "Documento final (100%)"
 
     class Modalidad(models.TextChoices):
         PROYECTO_GRADO = "PROYECTO_GRADO", "Proyecto de grado"

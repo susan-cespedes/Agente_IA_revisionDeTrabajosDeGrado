@@ -1,6 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.text import slugify
 from django.views.decorators.http import require_POST
 
 from apps.documentos.services import leer_documento
@@ -9,6 +12,7 @@ from apps.usuarios.services import obtener_api_key, obtener_token_google
 
 from .forms import RevisionForm
 from .models import Revision
+from .pdf import generar_pdf
 from .proveedores import ErrorProveedor
 from .services import guardar_revision, revisar_documento
 
@@ -39,7 +43,28 @@ def revisar(request):
 
 
 @login_required
+def historial(request):
+    """Lista las revisiones del usuario, de la más reciente a la más antigua."""
+    revisiones = request.user.revisiones.annotate(
+        criticas=Count("observaciones", filter=Q(observaciones__severidad="CRITICA")),
+        mayores=Count("observaciones", filter=Q(observaciones__severidad="MAYOR")),
+        menores=Count("observaciones", filter=Q(observaciones__severidad="MENOR")),
+    )
+    return render(request, "agente/historial.html", {"revisiones": revisiones})
+
+
+@login_required
 def detalle(request, pk):
     """Muestra una revisión guardada. Cada usuario solo puede ver las suyas."""
     revision = get_object_or_404(Revision, pk=pk, usuario=request.user)
     return render(request, "agente/resultado.html", {"revision": revision})
+
+
+@login_required
+def descargar_pdf(request, pk):
+    """Descarga las observaciones de una revisión en PDF."""
+    revision = get_object_or_404(Revision, pk=pk, usuario=request.user)
+    nombre = f"observaciones-{slugify(revision.nombre_documento) or 'documento'}-{revision.pk}.pdf"
+    respuesta = HttpResponse(generar_pdf(revision), content_type="application/pdf")
+    respuesta["Content-Disposition"] = f'attachment; filename="{nombre}"'
+    return respuesta
