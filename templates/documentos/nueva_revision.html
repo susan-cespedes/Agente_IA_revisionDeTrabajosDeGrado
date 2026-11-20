@@ -40,5 +40,17 @@
         <pre class="texto-leido">{{ documento.texto }}</pre>
     </details>
 </section>
+
+<section class="tarjeta resultado">
+    <h2>Revisar con el agente</h2>
+    <form method="post" action="{% url 'agente:revisar' %}" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').textContent='Revisando… puede tardar un par de minutos';">
+        {% csrf_token %}
+        {{ revision_form.documento_id }}
+        {{ revision_form.etapa.label_tag }} {{ revision_form.etapa }}
+        {{ revision_form.modalidad.label_tag }} {{ revision_form.modalidad }}
+        {{ revision_form.modelo.label_tag }} {{ revision_form.modelo }}
+        <button class="boton" type="submit">Revisar documento</button>
+    </form>
+</section>
 {% endif %}
 {% endblock %}

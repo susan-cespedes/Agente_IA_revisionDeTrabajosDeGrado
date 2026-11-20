@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "apps.usuarios",
     "apps.documentos",
+    "apps.agente",
 ]
 
 MIDDLEWARE = [
@@ -146,3 +147,17 @@ CACHES = {
         "TIMEOUT": 60 * 60 * 4,  # 4 horas
     },
 }
+
+# Agente de IA (OE1, OE4)
+# Modelos que el usuario puede elegir. Precios en USD por millón de tokens (entrada, salida);
+# se usan solo para estimar el costo de cada revisión.
+MODELOS_AGENTE = {
+    "claude-sonnet-5-5": {"nombre": "Claude Sonnet 5.5", "precio_entrada": 2.0, "precio_salida": 10.0},
+    "claude-opus-5-5": {"nombre": "Claude Opus 5.5", "precio_entrada": 4.0, "precio_salida": 20.0},
+}
+MODELO_POR_DEFECTO = "claude-sonnet-5-5"
+ESFUERZO_AGENTE = "medium"        # profundidad del razonamiento del modelo: low, medium, high
+MAX_TOKENS_SALIDA = 16000         # límite de la respuesta, incluye el razonamiento interno
+REGISTRAR_HISTORIAL = True        # guardar el historial de revisiones (solo durante las pruebas)
+
+AGENTE_SIMULADO = False            # True: respuesta de ejemplo sin llamar a Claude (desarrollo). False: Claude real.
