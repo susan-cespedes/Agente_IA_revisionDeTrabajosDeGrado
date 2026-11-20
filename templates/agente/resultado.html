@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block titulo %}Observaciones{% endblock %}
+{% block contenido %}
+{% if revision.simulado %}
+<div class="aviso aviso-warning">
+    <strong>Modo simulado:</strong> estas observaciones son de ejemplo, no las generó Claude.
+    Sirven para probar las pantallas mientras no se usa una API key real.
+</div>
+{% endif %}
+
+<section class="tarjeta resultado">
+    <h1>Observaciones del agente</h1>
+    <p><strong>{{ revision.nombre_documento }}</strong> · {{ revision.get_etapa_display }} · {{ revision.get_modalidad_display }}</p>
+    <p class="nota">Revisado el {{ revision.creada|date:"d/m/Y H:i" }}</p>
+    <p class="nota">
+        {{ revision.cantidad_observaciones }} observaciones:
+        {{ revision.conteo.CRITICA }} críticas · {{ revision.conteo.MAYOR }} mayores · {{ revision.conteo.MENOR }} menores
+    </p>
+    <p class="nota">
+        Modelo: {{ revision.modelo }} · Tokens: {{ revision.tokens_entrada }} de entrada y {{ revision.tokens_salida }} de salida
+        · Costo estimado: {{ revision.costo_estimado|floatformat:4 }} USD
+    </p>
+</section>
+
+<section class="tarjeta resultado">
+    <h2>Datos generales</h2>
+    <table class="datos">
+        <tr><th>Tipo de documento</th><td>{{ revision.datos_generales.tipo_documento }}</td></tr>
+        <tr><th>Objeto de estudio</th><td>{{ revision.datos_generales.objeto_estudio }}</td></tr>
+        <tr><th>Campo de acción</th><td>{{ revision.datos_generales.campo_accion }}</td></tr>
+        <tr><th>Causas</th><td>{{ revision.datos_generales.causas|join:"; " }}</td></tr>
+        <tr><th>Término de relación</th><td>{{ revision.datos_generales.termino_relacion }}</td></tr>
+        <tr><th>Efectos</th><td>{{ revision.datos_generales.efectos|join:"; " }}</td></tr>
+    </table>
+</section>
+
+<section class="tarjeta resultado">
+    <h2>Observaciones</h2>
+    {% for o in revision.observaciones.all %}
+    <article class="observacion sev-{{ o.severidad|lower }}">
+        <p class="obs-cabecera">
+            <span class="sev">{{ o.get_severidad_display }}</span>
+            <code>{{ o.regla }}</code> · {{ o.seccion }}
+        </p>
+        {% if o.fragmento %}
+        <blockquote>"{{ o.fragmento }}"</blockquote>
+        {% if not o.fragmento_encontrado %}
+        <p class="aviso aviso-warning">El fragmento citado no se encontró de forma literal en el documento; verifica esta observación.</p>
+        {% endif %}
+        {% endif %}
+        <p>{{ o.descripcion }}</p>
+    </article>
+    {% empty %}
+    <p>El agente no encontró incumplimientos.</p>
+    {% endfor %}
+</section>
+
+<a class="boton" href="{% url 'agente:pdf' revision.pk %}">Descargar PDF</a>
+<a class="boton secundario" href="{% url 'agente:historial' %}">Mis revisiones</a>
+<a class="boton secundario" href="{% url 'documentos:nueva_revision' %}">Revisar otro documento</a>
+{% endblock %}
